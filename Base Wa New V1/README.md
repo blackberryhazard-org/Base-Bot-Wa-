@@ -1,4 +1,4 @@
-# Base Wa By LevviCode
+# Base Bot Wa By LevviCode
 
 ## 📌 Informasi
 - Base Kosongan
