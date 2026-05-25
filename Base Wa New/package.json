@@ -1,0 +1,20 @@
+{
+  "name": "Base Bot Wa",
+  "version": "1.0.0",
+  "author": "LevviCode",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "npm:vialeys",
+    "@hapi/boom": "^10.0.1",
+    "pino": "^8.17.2",
+    "chalk": "^4.1.2",
+    "file-type": "^21.0.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "ffmpeg-static": "^5.2.0",
+    "node-webpmux": "^3.1.0"
+  }
+}
