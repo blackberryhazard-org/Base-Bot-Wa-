@@ -218,45 +218,51 @@ async function smsg(conn, m) {
         let text = m.msg.text || m.msg.caption || m.message.conversation || m.msg.contentText || m.msg.selectedDisplayText || m.msg.title || ''
         m.text = typeof m.msg === 'string' ? m.msg : text
         m.download = (saveToFile = false) => conn.downloadM(m, m.mtype.replace(/Message/i, ''), saveToFile)
+        
         let quoted = m.quoted = m.msg.contextInfo ? m.msg.contextInfo.quotedMessage : null
         if (m.quoted) {
             let type = Object.keys(m.quoted)[0]
-            m.quoted = m.quoted[type]
-            if (typeof m.quoted === 'string') m.quoted = { text: m.quoted }
-            m.quoted.mtype = type
-            m.quoted.id = m.msg.contextInfo.stanzaId
-            m.quoted.chat = m.msg.contextInfo.remoteJid || m.chat
-            m.quoted.sender = conn.decodeJid(m.msg.contextInfo.participant)
-            
-            if (m.quoted.sender.endsWith('@lid')) {
-                const originalQuotedSender = m.quoted.sender
-                if (m.isGroup) {
-                    let meta = conn.chats[m.chat]?.metadata || await conn.groupMetadata(m.chat).catch(() => null)
-                    const p = meta?.participants?.find(u => u.lid === m.quoted.sender)
-                    if (p) {
-                        m.quoted.sender = p.id
-                        conn.lidToJidMap.set(originalQuotedSender, p.id)
-                    }
-                } else {
-                    m.quoted.sender = await conn.resolveLidEnhanced(m.quoted.sender)
-                    if (m.quoted.sender !== originalQuotedSender) {
-                        conn.lidToJidMap.set(originalQuotedSender, m.quoted.sender)
+            let quotedMsg = m.quoted[type]
+            if (!quotedMsg) {
+                m.quoted = null
+            } else {
+                m.quoted = quotedMsg
+                if (typeof m.quoted === 'string') m.quoted = { text: m.quoted }
+                m.quoted.mtype = type
+                m.quoted.id = m.msg.contextInfo.stanzaId
+                m.quoted.chat = m.msg.contextInfo.remoteJid || m.chat
+                m.quoted.sender = conn.decodeJid(m.msg.contextInfo.participant)
+                
+                if (m.quoted.sender && m.quoted.sender.endsWith('@lid')) {
+                    const originalQuotedSender = m.quoted.sender
+                    if (m.isGroup) {
+                        let meta = conn.chats[m.chat]?.metadata || await conn.groupMetadata(m.chat).catch(() => null)
+                        const p = meta?.participants?.find(u => u.lid === m.quoted.sender)
+                        if (p) {
+                            m.quoted.sender = p.id
+                            conn.lidToJidMap.set(originalQuotedSender, p.id)
+                        }
+                    } else {
+                        m.quoted.sender = await conn.resolveLidEnhanced(m.quoted.sender)
+                        if (m.quoted.sender !== originalQuotedSender) {
+                            conn.lidToJidMap.set(originalQuotedSender, m.quoted.sender)
+                        }
                     }
                 }
-            }
 
-            if (m.quoted.chat.endsWith('@lid') && !m.isGroup) {
-                const originalQuotedChat = m.quoted.chat
-                m.quoted.chat = await conn.resolveLidEnhanced(m.quoted.chat)
-                if (m.quoted.chat !== originalQuotedChat) {
-                    conn.lidToJidMap.set(originalQuotedChat, m.quoted.chat)
+                if (m.quoted.chat && m.quoted.chat.endsWith('@lid') && !m.isGroup) {
+                    const originalQuotedChat = m.quoted.chat
+                    m.quoted.chat = await conn.resolveLidEnhanced(m.quoted.chat)
+                    if (m.quoted.chat !== originalQuotedChat) {
+                        conn.lidToJidMap.set(originalQuotedChat, m.quoted.chat)
+                    }
                 }
+                
+                m.quoted.fromMe = areJidsSameUser(m.quoted.sender, conn.decodeJid(conn.user.id))
+                m.quoted.text = m.quoted.text || m.quoted.caption || ''
+                m.quoted.reply = (text, chatId, options) => conn.reply(chatId ? chatId : m.chat, text, m.quoted, options)
+                m.quoted.download = (saveToFile = false) => conn.downloadM(m.quoted, m.quoted.mtype.replace(/Message/i, ''), saveToFile)
             }
-            
-            m.quoted.fromMe = areJidsSameUser(m.quoted.sender, conn.decodeJid(conn.user.id))
-            m.quoted.text = m.quoted.text || m.quoted.caption || ''
-            m.quoted.reply = (text, chatId, options) => conn.reply(chatId ? chatId : m.chat, text, m.quoted, options)
-            m.quoted.download = (saveToFile = false) => conn.downloadM(m.quoted, m.quoted.mtype.replace(/Message/i, ''), saveToFile)
         }
     }
     m.reply = (text, chatId, options) => conn.reply(chatId ? chatId : m.chat, text, m, options)
