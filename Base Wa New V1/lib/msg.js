@@ -1,3 +1,50 @@
+/*
+━━━━━━━━━━━━━━━━━━━━
+     LEVVICODE LICENSE
+━━━━━━━━━━━━━━━━━━━━
+
+Base Name : LevviCode Base Bot
+Developer : LevviCode
+Telegram  : t.me/lepicode
+
+[ LICENSE RULES ]
+
+1. DILARANG HAPUS CREDIT
+- Credit developer wajib ada
+- Nama "LevviCode" tidak boleh dihapus
+- Dilarang claim full script milik sendiri
+
+2. DIPERBOLEHKAN
+✔ Rename nama bot
+✔ Edit tampilan/menu
+✔ Tambah fitur
+✔ Fix bug
+✔ Recode untuk kebutuhan pribadi
+
+3. DILARANG
+✘ Jual ulang source tanpa izin
+✘ Share base private/premium
+✘ Encrypt lalu dijual kembali
+✘ Hapus watermark developer
+
+4. HAK PENGGUNA
+- Bebas memakai base untuk bot pribadi
+- Boleh open jasa run
+- Boleh open panel / jasa install
+- Tidak boleh resell source tanpa izin
+
+5. PELANGGARAN
+- Tidak mendapat update
+- Tidak mendapat support
+- License dianggap hangus
+
+Dengan memakai base ini,
+anda dianggap setuju dengan
+seluruh aturan di atas.
+
+© LevviCode - All Rights Reserved
+━━━━━━━━━━━━━━━━━━━━
+*/
 const path = require('path')
 const fs = require('fs')
 const { fileTypeFromBuffer } = require('file-type')
