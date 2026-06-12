@@ -121,7 +121,7 @@ async function connectToWhatsApp() {
             let m = chatUpdate.messages[0]
             if (!m.message) return
             if (m.key?.remoteJid === 'status@broadcast') return
-            if (m.key.fromMe) return
+            
 
             let processedMsg
             try {
